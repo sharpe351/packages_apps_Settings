@@ -45,11 +45,12 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.android.internal.util.cm.ScreenType;
+
 import com.android.settings.R;
 import com.android.settings.SettingsActivity;
 import com.android.settings.SettingsPreferenceFragment;
 import com.android.settings.SubSettings;
-import com.android.settings.Utils;
 import com.android.settings.cyanogenmod.BaseSystemSettingSwitchBar;
 
 public class ProfilesSettings extends SettingsPreferenceFragment
@@ -134,11 +135,6 @@ public class ProfilesSettings extends SettingsPreferenceFragment
 
         // check if we are enabled
         updateProfilesEnabledState();
-
-        // If running on a phone, remove padding around tabs
-        if (!Utils.isTablet(getActivity())) {
-            mContainer.setPadding(0, 0, 0, 0);
-        }
     }
 
     @Override
@@ -190,7 +186,7 @@ public class ProfilesSettings extends SettingsPreferenceFragment
         args.putBoolean(EXTRA_NEW_PROFILE, true);
         args.putParcelable(EXTRA_PROFILE, new Profile(getString(R.string.new_profile_name)));
 
-        SubSettings pa = (SubSettings) getActivity();
+        SettingsActivity pa = (SettingsActivity) getActivity();
         pa.startPreferencePanel(SetupTriggersFragment.class.getCanonicalName(), args,
                 0, null, this, 0);
     }

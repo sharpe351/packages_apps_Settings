@@ -25,12 +25,14 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.database.ContentObserver;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Gravity;
@@ -47,9 +49,10 @@ import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import org.cyanogenmod.hardware.KeyDisabler;
+
 import com.android.internal.util.vanir.NavbarConstants.NavbarConstant;
 import com.android.settings.R;
-//import com.android.settings.util.HardwareKeyNavbarHelper;
 import com.vanir.util.DeviceUtils;
 
 import java.util.ArrayList;
@@ -79,7 +82,7 @@ public class NavbarSettingsFragment extends Fragment implements SeekBar.OnSeekBa
     private CheckBox mArrows;
     private LinearLayout mLayouts;
 
-//    private Switch mEnabledSwitch;
+    private Switch mEnabledSwitch;
 
     // value stored in SettingsProvider
     private static int HValue;
@@ -97,7 +100,7 @@ public class NavbarSettingsFragment extends Fragment implements SeekBar.OnSeekBa
     int mMaxWidthPercent;
 
     private Handler mHandler = new Handler();
-/*    private SettingsObserver mSettingsObserver;
+    private SettingsObserver mSettingsObserver;
 
     class SettingsObserver extends ContentObserver {
         SettingsObserver(Handler handler) {
@@ -107,7 +110,7 @@ public class NavbarSettingsFragment extends Fragment implements SeekBar.OnSeekBa
         void observe() {
             ContentResolver resolver = getActivity().getContentResolver();
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.ENABLE_NAVIGATION_BAR), false, this);
+                    Settings.System.DEV_FORCE_SHOW_NAVBAR), false, this);
         }
 
         @Override
@@ -115,11 +118,11 @@ public class NavbarSettingsFragment extends Fragment implements SeekBar.OnSeekBa
             final ContentResolver resolver = getActivity().getContentResolver();
 
             boolean enabled = Settings.System.getInt(resolver,
-                         Settings.System.ENABLE_NAVIGATION_BAR, 0) == 1;
+                         Settings.System.DEV_FORCE_SHOW_NAVBAR, 0) == 1;
             mEnabledSwitch.setChecked(enabled);
         }
     }
-*/
+
     public NavbarSettingsFragment() {
     }
 
@@ -127,19 +130,25 @@ public class NavbarSettingsFragment extends Fragment implements SeekBar.OnSeekBa
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-/*        if (HardwareKeyNavbarHelper.shouldShowNavbarToggle()) {
+        final int deviceKeys = getResources().getInteger(
+                com.android.internal.R.integer.config_deviceHardwareKeys);
+
+        if (deviceKeys > 0 && deviceKeys != 64) {
             final Activity activity = getActivity();
             mEnabledSwitch = new Switch(activity);
             final int padding = activity.getResources().getDimensionPixelSize(R.dimen.action_bar_switch_padding);
             mEnabledSwitch.setPaddingRelative(0, 0, padding, 0);
             mEnabledSwitch.setOnCheckedChangeListener(this);
         }
-*/    }
+    }
 
     @Override
     public void onStart() {
         super.onStart();
-/*        if (HardwareKeyNavbarHelper.shouldShowNavbarToggle()) {
+        final int deviceKeys = getResources().getInteger(
+                com.android.internal.R.integer.config_deviceHardwareKeys);
+
+        if (deviceKeys > 0 && deviceKeys != 64) {
             final Activity activity = getActivity();
             activity.getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
                     ActionBar.DISPLAY_SHOW_CUSTOM);
@@ -148,19 +157,22 @@ public class NavbarSettingsFragment extends Fragment implements SeekBar.OnSeekBa
                     ActionBar.LayoutParams.WRAP_CONTENT,
                     Gravity.CENTER_VERTICAL | Gravity.END));
             mEnabledSwitch.setChecked((Settings.System.getInt(activity.getContentResolver(),
-                Settings.System.ENABLE_NAVIGATION_BAR, 0) == 1));
+                Settings.System.DEV_FORCE_SHOW_NAVBAR, 0) == 1));
         }
-*/    }
+    }
 
     @Override
     public void onStop() {
         super.onStop();
-/*        if (HardwareKeyNavbarHelper.shouldShowNavbarToggle()) {
+        final int deviceKeys = getResources().getInteger(
+                com.android.internal.R.integer.config_deviceHardwareKeys);
+
+        if (deviceKeys > 0 && deviceKeys != 64) {
             final Activity activity = getActivity();
             activity.getActionBar().setDisplayOptions(0, ActionBar.DISPLAY_SHOW_CUSTOM);
             activity.getActionBar().setCustomView(null);
         }
-*/    }
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -186,24 +198,26 @@ public class NavbarSettingsFragment extends Fragment implements SeekBar.OnSeekBa
     @Override
     public void onResume() {
         super.onResume();
-/*        if (HardwareKeyNavbarHelper.shouldShowNavbarToggle()) {
+        final int deviceKeys = getResources().getInteger(
+                com.android.internal.R.integer.config_deviceHardwareKeys);
+
+        if (deviceKeys > 0 && deviceKeys != 64) {
             if (mSettingsObserver == null) {
                 mSettingsObserver = new SettingsObserver(mHandler);
                 mSettingsObserver.observe();
             }
         }
-*/
     }
 
     @Override
     public void onPause() {
         super.onPause();
-/*        if (mSettingsObserver != null) {
+        if (mSettingsObserver != null) {
             ContentResolver resolver = getActivity().getContentResolver();
             resolver.unregisterContentObserver(mSettingsObserver);
             mSettingsObserver = null;
         }
-*/    }
+    }
 
     @Override
     public void onDestroy() {
@@ -248,7 +262,7 @@ public class NavbarSettingsFragment extends Fragment implements SeekBar.OnSeekBa
         mBarWidthValue.setText(String.valueOf(currentWidthPercent + mMinWidthPercent)+"%");
         mNavigationBarWidth.setOnSeekBarChangeListener(this);
 
-		// Softkey longpress timeout
+        // Softkey longpress timeout
         mSoftkeyLongPress = (SeekBar) v.findViewById(R.id.navigation_bar_longpress_timeout);
         mSoftkeyLongPressValue = (TextView) v.findViewById(R.id.navigation_bar_longpress_timeout_value);
         mSoftkeyLongPress.setMax(SOFTKEY_LONG_PRESS_TIMEOUT_MAX_VAL);
@@ -326,17 +340,20 @@ public class NavbarSettingsFragment extends Fragment implements SeekBar.OnSeekBa
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-/*        if (buttonView == mEnabledSwitch) {
+        if (buttonView == mEnabledSwitch) {
             mEnabledSwitch.setEnabled(false);
-            HardwareKeyNavbarHelper.writeEnableNavbarOption(getActivity(), mEnabledSwitch.isChecked());
+            Settings.System.putInt(getActivity().getContentResolver(),
+                    Settings.System.DEV_FORCE_SHOW_NAVBAR, isChecked ? 1 : 0);
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     mEnabledSwitch.setEnabled(true);
                 }
             }, 1000);
+            getActivity().sendBroadcast(new Intent(
+                    "vanir.android.settings.CHECK_KEYDISABLER_STATE"));
         }
-*/    }
+    }
 
     @Override
     public void onProgressChanged(SeekBar seekbar, int rawprogress, boolean fromUser) {

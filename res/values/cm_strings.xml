@@ -273,7 +273,7 @@
     <string name="no_filters_title">No filters set</string>
 
     <!-- About phone screen,  setting option name -->
-    <string name="mod_version">EXODUS version</string>
+    <string name="mod_version" translatable="false">EXODUS version</string>
 
     <!-- Settings switch for updating Cyanogen recovery -->
     <string name="update_recovery_title">Update recovery</string>
@@ -282,6 +282,8 @@
     <string name="update_recovery_off_warning">WARNING: When this feature is disabled, your installed recovery will not be updated with OS upgrades.\n\nFuture OS updates may not install with outdated or custom recovery versions.\n\nDo you really want to disable this feature?</string>
 
     <string name="mod_version_default">Unknown</string>
+
+    <!-- About phone screen, model name -->
     <string name="model_name">Model name</string>
 
     <!-- About phone screen, build date of ROM -->
@@ -297,7 +299,8 @@
     <string name="advanced_settings">Advanced settings</string>
     <string name="advanced_settings_summary">Enable more settings options</string>
 
-    <string name="contributor_cloud_title">Contributors</string>
+    <!-- About phone screen, service state -->
+    <string name="phone_service_state">Voice: <xliff:g id="voice_state">%1$s</xliff:g>, data: <xliff:g id="data_state">%2$s</xliff:g></string>
 
     <!--- Tap To Wake -->
     <string name="double_tap_to_wake_title">Double-tap to wake</string>
@@ -475,6 +478,10 @@
     <!-- High touch sensitivity -->
     <string name="high_touch_sensitivity_title">High touch sensitivity</string>
     <string name="high_touch_sensitivity_summary">Increase touchscreen sensitivity so it can be used while wearing gloves</string>
+
+    <!-- Touchscreen hovering -->
+    <string name="touchscreen_hovering_title">Touchscreen hovering</string>
+    <string name="touchscreen_hovering_summary">Allows you to hover the screen like a mouse in web browsers, remote desktops, etc</string>
 
     <!-- App ops -->
     <string name="app_ops_summaries_coarse_location">coarse location</string>
@@ -757,14 +764,14 @@
     <string name="usb_format" product="default">Erase USB storage</string>
     <string name="usb_format_summary" product="default">Erases all data on the USB storage, such as music and photos</string>
     <string name="usb_mount" product="default">Mount USB storage</string>
-    <string name="usb_mount_summary" product="default"></string>
+    <string name="usb_mount_summary" product="default" translatable="false"></string>
     <string name="usb_insert_summary" product="default">Insert USB storage to mount</string>
     <string name="uicc_eject" product="default">Unmount UICC storage</string>
     <string name="uicc_eject_summary" product="default">Unmount the UICC storage so you can safely remove it</string>
     <string name="uicc_format" product="default">Erase UICC storage</string>
     <string name="uicc_format_summary" product="default">Erases all data on the UICC storage, such as music and photos</string>
     <string name="uicc_mount" product="default">Mount UICC storage</string>
-    <string name="uicc_mount_summary" product="default"></string>
+    <string name="uicc_mount_summary" product="default" translatable="false"></string>
     <string name="uicc_insert_summary" product="default">Insert UICC storage to mount</string>
     <!-- Title of dialog asking user to confirm before enabling UMS. [CHAR LIMIT=48] -->
     <string name="usb_settings_enable_ums_title">Enable mass storage?</string>
@@ -928,12 +935,20 @@
     <!-- Notification drawer -->
     <string name="notification_drawer_title">Notification drawer</string>
 
-    <string name="status_bar_quick_qs_pulldown_title">Quick pulldown</string>
-    <string name="status_bar_quick_qs_pulldown_summary">Right edge of the status bar pulls down Quick Settings</string>
+    <string name="quick_pulldown_title">Quick pulldown</string>
+    <string name="quick_pulldown_summary">%1$s edge of the status bar pulls down Quick Settings</string>
+    <string name="quick_pulldown_summary_left">Left</string>
+    <string name="quick_pulldown_summary_right">Right</string>
+    <string name="quick_pulldown_off">Off</string>
+    <string name="quick_pulldown_left">Left</string>
+    <string name="quick_pulldown_right">Right</string>
 
     <!-- Weather in status bar header -->
     <string name="status_bar_show_weather_title">Show weather</string>
     <string name="status_bar_show_weather_summary">Show the weather above the Quick Settings panel</string>
+
+    <!-- Quick Settings -->
+    <string name="quick_settings_powermenu_label">Power Menu</string>
 
     <string name="qs_category_title">Quick Settings panel</string>
 
@@ -958,7 +973,7 @@
     <string name="qs_tile_hotspot">Hotspot</string>
     <string name="qs_tile_adb_over_network">ADB over network</string>
     <string name="qs_tile_profiles">System profiles</string>
-    <string name="qs_tile_performance">Performance</string>
+    <string name="qs_tile_performance">Battery mode</string>
     <string name="qs_tile_nfc">NFC</string>
     <string name="qs_tile_compass">Compass</string>
     <string name="qs_tile_lockscreen">Lock screen</string>

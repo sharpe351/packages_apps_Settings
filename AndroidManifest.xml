@@ -70,7 +70,8 @@
     <uses-permission android:name="android.permission.READ_SEARCH_INDEXABLES" />
     <uses-permission android:name="android.permission.OEM_UNLOCK_STATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-
+    <uses-permission android:name="android.permission.HARDWARE_ABSTRACTION_ACCESS" />
+    
     <!-- Vanir feature permissions -->
     <uses-permission android:name="android.permission.GET_TOP_ACTIVITY_INFO"/>
 
@@ -87,8 +88,6 @@
             android:supportsRtl="true"
             android:allowBackup="false">
 
-        <uses-library android:name="org.cyanogenmod.hardware" required="false" />
-
         <!-- Screen color Settings Controls -->
         <activity android:name=".ScreenColorSettings" android:label="@string/screencolor"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -100,9 +99,6 @@
         </activity>
 
         <!-- Settings -->
-        <uses-library android:name="org.cyanogenmod.hardware"
-                android:required="false" />
-
         <activity android:name="Settings"
                 android:taskAffinity="com.android.settings"
                 android:label="@string/settings_label_launcher"
@@ -1842,6 +1838,32 @@
             </intent-filter>
         </activity>
         <!-- Vanir activities End -->
+
+        <!-- LiveDisplay settings -->
+        <activity android:name="Settings$LiveDisplayActivity"
+                android:label="@string/live_display_title"
+                android:excludeFromRecents="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.settings.LIVEDISPLAY_SETTINGS" />
+                <action android:name="com.android.settings.LIVEDISPLAY_SETTINGS" />
+                <category android:name="android.intent.category.VOICE_LAUNCH" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.SHORTCUT" />
+            </intent-filter>
+            <meta-data android:name="com.android.settings.FRAGMENT_CLASS"
+                android:value="com.android.settings.livedisplay.LiveDisplay" />
+        </activity>
+
+        <activity-alias android:name=".livedisplay.LiveDisplay"
+                android:taskAffinity="com.android.settings"
+                android:label="@string/live_display_title"
+                android:targetActivity="Settings$LiveDisplayActivity"
+                android:configChanges="orientation|keyboardHidden|screenSize"
+                android:exported="true">
+            <meta-data android:name="com.android.settings.FRAGMENT_CLASS"
+                       android:value="com.android.settings.livedisplay.LiveDisplay" />
+        </activity-alias>
 
         <!-- Pseudo-activity used to provide an intent-filter entry point to encryption settings -->
         <activity android:name="Settings$CryptKeeperSettingsActivity"

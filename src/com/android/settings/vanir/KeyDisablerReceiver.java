@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.hardware.CmHardwareManager;
 import android.os.PowerManager;
 import android.os.SystemProperties;
 import android.os.UserHandle;
@@ -35,12 +36,10 @@ import com.android.settings.R;
 import java.util.Arrays;
 import java.util.List;
 
-import org.cyanogenmod.hardware.KeyDisabler;
 
 public class KeyDisablerReceiver extends BroadcastReceiver {
 
     private static final String TAG = "KeyDisablerReceiver";
-
     @Override
     public void onReceive(Context ctx, Intent intent) {
         if (intent.getAction().equals("vanir.android.settings.TOGGLE_NAVBAR_FOR_HARDKEYS")) {
@@ -53,29 +52,45 @@ public class KeyDisablerReceiver extends BroadcastReceiver {
                     Settings.System.DEV_FORCE_DISABLE_HARDKEYS, 0, UserHandle.USER_CURRENT) == 1;
             boolean enabled = Settings.System.getInt(resolver,
                     Settings.System.DEV_FORCE_SHOW_NAVBAR, 0) == 1;
+            final CmHardwareManager cmHardwareManager =
+                        (CmHardwareManager) ctx.getSystemService(Context.CMHW_SERVICE);
 
             Settings.System.putInt(resolver, Settings.System.DEV_FORCE_SHOW_NAVBAR, enabled ? 1 : 0);
-            if (forceDisabled) {
-                KeyDisabler.setActive(enabled);
-            }
+            cmHardwareManager.set(CmHardwareManager.FEATURE_KEY_DISABLE, forceDisabled && enabled);
 
             Editor editor = prefs.edit();
             if (enabled) {
-                int currentBrightness = Settings.System.getInt(resolver,
-                        Settings.System.BUTTON_BRIGHTNESS, defaultBrightness);
+				// save the current butten brightness timeout
+                int currentBrightness = Settings.Secure.getInt(resolver,
+                        Settings.Secure.BUTTON_BRIGHTNESS, defaultBrightness);
                 if (!prefs.contains("pre_navbar_button_backlight")) {
                     editor.putInt("pre_navbar_button_backlight", currentBrightness);
                 }
+                // set current brightness timeout to zero hiding the buttons
                 if (forceDisabled) {
-                    Settings.System.putInt(resolver,
-                            Settings.System.BUTTON_BRIGHTNESS, 0);
-                }
+                    Settings.Secure.putInt(resolver,
+                            Settings.Secure.BUTTON_BRIGHTNESS, 0);
+                } else {
+					// reset the brightness timeout
+					if (prefs.contains("pre_navbar_button_backlight")) {
+						Settings.Secure.putInt(resolver,
+								Settings.Secure.BUTTON_BRIGHTNESS,
+								prefs.getInt("pre_navbar_button_backlight", defaultBrightness));
+						editor.remove("pre_navbar_button_backlight");
+					} else {
+						Settings.Secure.putInt(resolver,
+								Settings.Secure.BUTTON_BRIGHTNESS, defaultBrightness);
+					}
+				}
             } else {
-                if (forceDisabled) {
-                    Settings.System.putInt(resolver,
-                            Settings.System.BUTTON_BRIGHTNESS,
+				if (prefs.contains("pre_navbar_button_backlight")) {
+                    Settings.Secure.putInt(resolver,
+                            Settings.Secure.BUTTON_BRIGHTNESS,
                             prefs.getInt("pre_navbar_button_backlight", defaultBrightness));
                     editor.remove("pre_navbar_button_backlight");
+                } else {
+                    Settings.Secure.putInt(resolver,
+                            Settings.Secure.BUTTON_BRIGHTNESS, defaultBrightness);
                 }
             }
         }
